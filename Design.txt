@@ -1,0 +1,442 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 14.02.2024 15:03:33
+// Design Name: 
+// Module Name: COFFEE
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+`timescale 1ns / 1ps
+
+module coffee_making(
+  input clk,             
+  input [2:0] btn_start,       
+  input Espresso_without_sugar,
+  input Espresso_with_sugar,
+  input Milk_without_sugar,
+  input Milk_with_sugar,
+  input Cappuccino_without_sugar,
+  input Cappuccino_with_sugar,
+  input rst,             
+  output reg cup,       
+  output reg water,     
+  output reg milk,     
+  output reg coffee,    
+  output reg sugar,     
+  output reg stirrer,   
+  output reg finish
+);  
+  reg [2:0] state;        
+  reg [31:0] timer;
+
+always @(posedge clk or posedge rst) begin
+  if (rst) begin
+    state <= 3'b000;
+    timer <= 32'd0;
+    cup <= 0;
+    water <= 0;
+    milk <= 0;
+    coffee <= 0;
+    sugar <= 0;
+    stirrer <= 0;
+    finish <= 0;
+  end
+  
+  //MILK WITH SUGAR
+  else if((btn_start == 1) && Milk_with_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        milk <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        milk <= 0;
+        sugar <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b011: begin
+        sugar <= 0;
+        stirrer <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b100: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+
+//MILK WITHOUT SUGAR
+ else if((btn_start == 2) && Milk_without_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        milk <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        milk <= 0;
+        sugar <= 0;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b011: begin
+        sugar <= 0;
+        stirrer <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b100: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+
+//ESPRESSO WITH SUGAR
+ else if((btn_start == 3) && Espresso_with_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        coffee <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        coffee <= 0;
+        water <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+		3'b011: begin
+        water <= 0;
+        sugar <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b100: begin
+        sugar <= 0;
+        stirrer <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b110: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+
+//ESPRESSO WITHOUT SUGAR
+else if((btn_start == 4) && Espresso_without_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        coffee <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        coffee <= 0;
+        water <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+		3'b011: begin
+        water <= 0;
+        sugar <= 0;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b100: begin
+        sugar <= 0;
+        stirrer <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b110: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+
+//CAPPUCCINO WITH SUGAR
+else if((btn_start == 5) && Cappuccino_with_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        coffee <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        coffee <= 0;
+        milk <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+		3'b011: begin
+        milk <= 0;
+        sugar <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b100: begin
+        sugar <= 0;
+        stirrer <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b110: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+
+//CAPPUCCINO WITHOUT SUGAR
+else if((btn_start == 6) && Cappuccino_without_sugar) begin
+	timer <= timer+1;
+    case(state)
+      3'b000: begin
+        cup <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b001;
+          timer <= 32'd0;
+        end
+		 end
+    
+      3'b001: begin
+        cup <= 0;
+        coffee <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b010;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b010: begin
+        coffee <= 0;
+        milk <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+		3'b011: begin
+        milk <= 0;
+        sugar <= 0;
+        if(timer >= 100_000_000) begin
+          state <= 3'b011;
+          timer <= 32'd0;
+        end
+      end
+		
+      3'b100: begin
+        sugar <= 0;
+        stirrer <= 0;
+        if(timer >= 100_000_000) begin
+          state <= 3'b100;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b101: begin
+        stirrer <= 0;
+        finish <= 1;
+        if(timer >= 100_000_000) begin
+          state <= 3'b101;
+          timer <= 32'd0;
+        end
+		 end
+      
+      3'b110: begin
+        finish <= 0;
+        if(timer >= 100_000_000) begin
+          timer <= 32'd0;
+        end	
+		 end
+    endcase
+end
+end
+endmodule
+
+
+
+
+
